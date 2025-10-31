@@ -1,4 +1,4 @@
-﻿using SFKMod;
+﻿using SFKMod.UILib;
 using SuperFantasyKingdom;
 using SuperFantasyKingdom.UI;
 using System.Linq;

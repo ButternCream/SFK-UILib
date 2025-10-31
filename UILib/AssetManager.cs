@@ -7,7 +7,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem.Utilities;
 
-namespace SFKMod
+namespace SFKMod.UILib
 {
     public sealed class AssetManager
     {

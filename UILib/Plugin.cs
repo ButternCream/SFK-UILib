@@ -5,9 +5,9 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
 
-namespace SFKMod
+namespace SFKMod.UILib
 {
-    [BepInPlugin(Plugin.PLUGIN_GUID, Plugin.PLUGIN_NAME, Plugin.PLUGIN_VERSION)]
+    [BepInPlugin(PLUGIN_GUID, PLUGIN_NAME, PLUGIN_VERSION)]
     public class Plugin : BaseUnityPlugin
     {
 
@@ -44,7 +44,7 @@ namespace SFKMod
 
             SceneManager.sceneLoaded += OnSceneLoaded;
 
-            Logger.LogInfo($"Plugin {Plugin.PLUGIN_GUID} is loaded!");
+            Logger.LogInfo($"Plugin {PLUGIN_GUID} is loaded!");
 
             DontDestroyOnLoad(this);
         }
