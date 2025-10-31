@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net481</TargetFramework>
+    <AssemblyName>SFKMod</AssemblyName>
+    <Product>UI Plugin Test</Product>
+    <Version>1.0.0</Version>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+    <RestoreAdditionalProjectSources>
+      https://api.nuget.org/v3/index.json;
+      https://nuget.bepinex.dev/v3/index.json;
+      https://nuget.samboy.dev/v3/index.json
+    </RestoreAdditionalProjectSources>
+    <RootNamespace>SFKMod</RootNamespace>
+    <SuperFantasyKingdomData>Z:\SteamLibrary\steamapps\common\Super Fantasy Kingdom\Super Fantasy Kingdom_Data</SuperFantasyKingdomData>
+  </PropertyGroup>
+ 
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+    <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" IncludeAssets="build; contentfiles" Version="0.4.3" PrivateAssets="all" />
+    <PackageReference Include="MicroUtils.HarmonyAnalyzers" IncludeAssets="runtime; build; native; contentfiles; analyzers" Version="*-*" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="$(SuperFantasyKingdomData)\Managed\*.dll" Publicize="true" Private="false" />
+    <Reference Include="$(SuperFantasyKingdomData)\..\BepInEx\core\*.dll" Private="false" />
+    <Reference Remove="$(SuperFantasyKingdomData)\..\BepInEx\core\0Harmony20.dll" />
+    <Reference Remove="$(SuperFantasyKingdomData)\Managed\System*.dll" />
+    <Reference Remove="$(SuperFantasyKingdomData)\Managed\mscorlib.dll*" />
+  </ItemGroup>
+
+  <Target Name="Deploy" AfterTargets="Build">
+    <ItemGroup>
+      <Files Include="$(TargetDir)\**\*.*" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(Files)" DestinationFiles="@(Files->'$(SuperFantasyKingdomData)\..\BepInEx\plugins\$(AssemblyName)\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <ZipDirectory SourceDirectory="$(MSBuildProjectDirectory)\$(OutputPath)" DestinationFile="$(MSBuildProjectDirectory)\$(OutputPath)\..\$(AssemblyName)-$(Version).zip" Overwrite="true" />
+  </Target>
+  
+</Project>
