@@ -1,7 +1,5 @@
 ﻿using SFKMod.UILib;
-using SuperFantasyKingdom;
 using SuperFantasyKingdom.UI;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -40,8 +38,14 @@ public class UIObject
 
         return new Vector2(randomX, randomY);
     }
-
-    public static UIObject CreateRandomRect(string name, Color color, Transform parent = null)
+    /// <summary>
+    /// Create a rectangle at a random location
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="color"></param>
+    /// <param name="parent"></param>
+    /// <returns></returns>
+    public static UIObject TestCreateRandomRect(string name, Color color, Transform parent = null)
     {
 
         var randObj = new UIObject(name, parent)
@@ -50,8 +54,14 @@ public class UIObject
 
         return randObj;
     }
-
-    public static UIObject CreateRandomTextRect(string name, string text, Transform parent = null)
+    /// <summary>
+    /// Create text with a background at a random location
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="text"></param>
+    /// <param name="parent"></param>
+    /// <returns></returns>
+    public static UIObject TestCreateRandomTextRect(string name, string text, Transform parent = null)
     {
         var randTextObj = new UIObject(name, parent)
             .SetBounds(100,100, absolutePos: getRandomScreenPosition())
@@ -60,8 +70,14 @@ public class UIObject
 
         return randTextObj;
     }
-
-    public static UIObject CreateRandomMenuButton(string name, string text, Transform parent = null)
+    /// <summary>
+    /// Test creating a menu like button at a random location
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="text"></param>
+    /// <param name="parent"></param>
+    /// <returns></returns>
+    public static UIObject TestCreateRandomMenuButton(string name, string text, Transform parent = null)
     {
         var randButton = new UIObject(name, parent)
             .SetBounds(200, 50, absolutePos: getRandomScreenPosition())
@@ -71,8 +87,15 @@ public class UIObject
 
         return randButton;
     }
-
-    public static UIObject CreateMenuButton(string name, string text, UnityAction onClick = null, Transform parent = null)
+    /// <summary>
+    /// Test creating a menu like button
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="text"></param>
+    /// <param name="onClick"></param>
+    /// <param name="parent"></param>
+    /// <returns></returns>
+    public static UIObject TestCreateMenuButton(string name, string text, UnityAction onClick = null, Transform parent = null)
     {
 
         var menuButton = new UIObject(name, parent)
@@ -91,9 +114,28 @@ public class UIObject
         {
             Object.transform.SetParent(parent, false);
         }
+        else
+        {
+            try
+            {
+                // Try to set parent default to the main canvas
+                var mainCanvas = GameObject.Find("Canvas");
+                Object.transform.SetParent(mainCanvas.transform, false);
+            } catch
+            {
+                Debug.Log("Failed to set parent object.");
+                throw;
+            }
+        }
 
-        Transform = Object.AddComponent<RectTransform>();
+            Transform = Object.AddComponent<RectTransform>();
     }
+    /// <summary>
+    /// Adds a background, which essentially just fills your bounds with a color.
+    /// </summary>
+    /// <param name="color"></param>
+    /// <param name="rounded"></param>
+    /// <returns></returns>
     public UIObject AddBackground(Color color, bool rounded = false)
     {
         // Check if Image component already exists
@@ -121,7 +163,12 @@ public class UIObject
 
         return this;
     }
-
+    /// <summary>
+    /// Add a text component. If you're adding it to something like a button you should set createChild to true
+    /// </summary>
+    /// <param name="text"></param>
+    /// <param name="createChild"></param>
+    /// <returns></returns>
     public UIObject AddText(string text, bool createChild = true)
     {
         TextMeshProUGUI textMesh;
@@ -148,6 +195,7 @@ public class UIObject
         textMesh.SetText(text);
         textMesh.horizontalAlignment = HorizontalAlignmentOptions.Center;
         textMesh.verticalAlignment = VerticalAlignmentOptions.Middle;
+        // TODO: Parameterize
         TMP_FontAsset menuFont = AssetManager.Instance.GetFontByName("Compass", exact: false);
         
         textMesh.font = menuFont;
@@ -155,6 +203,12 @@ public class UIObject
         return this;
     }
 
+    /// <summary>
+    /// Make the object clickable
+    /// </summary>
+    /// <param name="withShake"></param>
+    /// <param name="onClick"></param>
+    /// <returns></returns>
     public UIObject MakeClickable(bool withShake = false, UnityAction onClick = null)
     {
         Button btn = Object.AddComponent<Button>();
@@ -171,9 +225,9 @@ public class UIObject
     }
 
     /// <summary>
-    /// This sets your newly created UI object in a position relative to an existing object. 
+    /// This sets your newly created object in a position relative to an existing object. 
     /// Useful for adding your element to existing layouts.
-    /// Offset works like objVector + offsetVector (0,-50) moves it down 50 pixels.
+    /// Offset works like objVector + offsetVector e.g (0,-50) moves it down 50 pixels.
     /// </summary>
     /// <param name="obj"></param>
     /// <param name="offset"></param>
@@ -182,7 +236,7 @@ public class UIObject
     {
         if (obj == null)
         {
-            Debug.Log($"Could not find game object");
+            Debug.Log($"RelativeTo(): Could not find game object");
             return this;
         }
 
@@ -201,8 +255,56 @@ public class UIObject
 
         return this;
     }
+    /// <summary>
+    /// Creates a vertical layout with size and spacing you can use in your own code
+    /// </summary>
+    /// <param name="size"></param>
+    /// <param name="padding"></param>
+    /// <param name="spacing"></param>
+    /// <returns></returns>
+    public static GameObject CreateVerticalLayout(Vector2 size, Vector2 location, Color background, int padding= 10, int spacing = 5)
+    {
+        GameObject canvas = GameObject.Find("Canvas");
+        Canvas canvasComp = canvas.GetComponent<Canvas>();
+        
+        GameObject panel = new GameObject("mPanel");
+        RectTransform panelRect = panel.AddComponent<RectTransform>();
+        panelRect.SetParent(canvas.transform, false);
+
+        // Set anchors to top-left corner
+        panelRect.anchorMin = new Vector2(0, 1);
+        panelRect.anchorMax = new Vector2(0, 1); 
+        panelRect.pivot = new Vector2(0, 1); 
+
+
+        panelRect.anchoredPosition = location;
+        panelRect.sizeDelta = size;
+        
+        Image panelImage = panel.AddComponent<Image>();
+        panelImage.color = background;
+
+        VerticalLayoutGroup vLayout = panel.AddComponent<VerticalLayoutGroup>();
+        vLayout.padding = new RectOffset(padding, padding, padding, padding);
+        vLayout.spacing = spacing;
+        vLayout.childAlignment = TextAnchor.UpperCenter;
+        vLayout.childControlHeight = false;
+        vLayout.childForceExpandHeight = false;
+        
+
+        return panel;
+    }
 
     // TODO: Update this
+    /// <summary>
+    /// Set the size and location of your object
+    /// </summary>
+    /// <param name="width"></param>
+    /// <param name="height"></param>
+    /// <param name="screenAnchor"></param>
+    /// <param name="offset"></param>
+    /// <param name="absolutePos"></param>
+    /// <param name="parentCanvas"></param>
+    /// <returns></returns>
     public UIObject SetBounds(
         // Size
         int width,

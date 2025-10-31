@@ -81,15 +81,15 @@ namespace SFKMod.UILib
             GUILayout.Label("IMGUI Panel");
             if (GUILayout.Button("Rect"))
             {
-                UIObject.CreateRandomRect("randRect", Color.red, GameObject.Find("Canvas").transform);
+                UIObject.TestCreateRandomRect("randRect", Color.red, GameObject.Find("Canvas").transform);
             }
             if (GUILayout.Button("Text"))
             {
-                UIObject.CreateRandomTextRect("randText", "Hello World", GameObject.Find("Canvas").transform);
+                UIObject.TestCreateRandomTextRect("randText", "Hello World", GameObject.Find("Canvas").transform);
             }
             if (GUILayout.Button("Button"))
             {
-                UIObject.CreateMenuButton(
+                UIObject.TestCreateMenuButton(
                     "menuButton",
                     "Toggle GUI",
                     () => { m_Visible = !m_Visible; },
@@ -100,6 +100,16 @@ namespace SFKMod.UILib
                     new Vector2(0, -50f)
                 );
             }
+            if (GUILayout.Button("Layout"))
+            {
+                var panel = UIObject.CreateVerticalLayout(new Vector2(250, 200), new Vector2(600, -500), new Color(1, 1, 1, 0.5f));
+                // Test adding 3 things
+                for (int i = 0; i < 3; i++)
+                {
+                    var btn = UIObject.TestCreateMenuButton($"test_{i}", $"button {i}", null, panel.transform);
+                }
+            }
+
 
             GUILayout.Space(8);
             GUILayout.Label($"Window position: {Mathf.RoundToInt(m_WindowRect.x)}, {Mathf.RoundToInt(m_WindowRect.y)}");
