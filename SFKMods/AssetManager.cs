@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SFKMod.Mods;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +8,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem.Utilities;
 
-namespace SFKMod.UILib
+namespace SFKMod
 {
     public sealed class AssetManager
     {

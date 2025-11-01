@@ -1,4 +1,5 @@
-﻿using SFKMod.UILib;
+﻿using SFKMod;
+using SFKMod.Mods;
 using SuperFantasyKingdom.UI;
 using TMPro;
 using UnityEngine;

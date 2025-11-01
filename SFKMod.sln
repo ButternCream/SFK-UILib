@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36623.8
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFKMods", "UILib\SFKMods.csproj", "{D37A47A8-5388-793E-063E-EE0640664089}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFKMods", "SFKMods\SFKMods.csproj", "{5701E2EC-23D5-07DC-55DF-D6DB375D32B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D37A47A8-5388-793E-063E-EE0640664089}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D37A47A8-5388-793E-063E-EE0640664089}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D37A47A8-5388-793E-063E-EE0640664089}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D37A47A8-5388-793E-063E-EE0640664089}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5701E2EC-23D5-07DC-55DF-D6DB375D32B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5701E2EC-23D5-07DC-55DF-D6DB375D32B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5701E2EC-23D5-07DC-55DF-D6DB375D32B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5701E2EC-23D5-07DC-55DF-D6DB375D32B9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

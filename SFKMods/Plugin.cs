@@ -1,11 +1,14 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
+using HarmonyLib;
+using ModItems;
+using System.Drawing;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using HarmonyLib;
 
-namespace SFKMod.UILib
+namespace SFKMod.Mods
 {
     [BepInPlugin(PLUGIN_GUID, PLUGIN_NAME, PLUGIN_VERSION)]
     public class Plugin : BaseUnityPlugin
@@ -56,6 +59,27 @@ namespace SFKMod.UILib
         void OnSceneLoaded(Scene scene, LoadSceneMode loadMode)
         {
             Logger.LogInfo($"scene={scene.name} loadMode={loadMode}");
+            if (scene.name == "TitleScene")
+            {
+                Sprite defenseIcon = UnityEngine.Resources
+                    .FindObjectsOfTypeAll<Sprite>()
+                    .FirstOrDefault(s => s.name == "IconDefense");
+                var bigShield = new ModItemDef
+                {
+                    id = "mod:BigShield100",
+                    title = "Big Shield (+100)",
+                    description = "Increase base shield by 100.",
+                    icon = defenseIcon,
+                    cost = 10,
+                    cooldown = 9999999f, // one-time
+                    statMods =
+                    {
+                        new ModStatMod { statPath = "maxShield", valueType = ModValueType.Flat, value = 100f, origin = -1 }
+                    }
+                };
+                ModItemRegistry.Register(bigShield);
+                Logger.LogInfo("[ModItems] Registered mod:BigShield100.");
+            }
         }
 
         void Update()
@@ -75,22 +99,21 @@ namespace SFKMod.UILib
             m_WindowRect = GUILayout.Window(123456, m_WindowRect, DrawWindowContents, "Mod");
         }
 
-        void SpawnAtScreenCenter()
+        Vector3 ScreenCenter()
         {
             // Convert screen center to world
             var cam = Camera.main;
             if (!cam)
             {
                 Debug.LogWarning("No main camera found!");
-                return;
+                return Vector3.zero;
             }
 
             Vector3 screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f, cam.nearClipPlane + 5f);
             Vector3 worldPos = cam.ScreenToWorldPoint(screenCenter);
             worldPos.z = 0f;
 
-            // Spawn via your custom API
-            ShardAPI.SpawnFaith(worldPos, 1, "GUIButtonTestSpawn");
+            return worldPos;
         }
 
         private void DrawWindowContents(int id)
@@ -100,7 +123,7 @@ namespace SFKMod.UILib
             GUILayout.Label("IMGUI Panel");
             if (GUILayout.Button("Rect"))
             {
-                UIObject.TestCreateRandomRect("randRect", Color.red, GameObject.Find("Canvas").transform);
+                UIObject.TestCreateRandomRect("randRect", UnityEngine.Color.red, GameObject.Find("Canvas").transform);
             }
             if (GUILayout.Button("Text"))
             {
@@ -121,16 +144,22 @@ namespace SFKMod.UILib
             }
             if (GUILayout.Button("Layout"))
             {
-                var panel = UIObject.CreateVerticalLayout(new Vector2(250, 200), new Vector2(600, -500), new Color(1, 1, 1, 0.5f));
+                var panel = UIObject.CreateVerticalLayout(new Vector2(250, 200), new Vector2(600, -500), new UnityEngine.Color(1, 1, 1, 0.5f));
                 // Test adding 3 things
                 for (int i = 0; i < 3; i++)
                 {
                     var btn = UIObject.TestCreateMenuButton($"test_{i}", $"button {i}", null, panel.transform);
                 }
             }
-            if (GUILayout.Button("Test Spawn"))
+            if (GUILayout.Button("Test Resource Spawn"))
             {
-                SpawnAtScreenCenter();
+                ShardAPI.SpawnFaith(ScreenCenter(), 1, "CustomFaith");
+            }
+            if (GUILayout.Button("Test Item Spawn"))
+            {
+                var cam = Camera.main;
+                var wp = cam ? cam.ScreenToWorldPoint(new Vector3(Screen.width / 2f, Screen.height / 2f, cam.nearClipPlane + 5f)) : Vector3.zero;
+                ModItemSpawner.SpawnDrag("mod:BigShield100", new Vector2(wp.x, wp.y));
             }
 
 

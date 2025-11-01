@@ -1,5 +1,5 @@
 ﻿using SFKMod.Patches;
-using SFKMod.UILib;
+using SFKMod.Mods;
 using SuperFantasyKingdom;
 using SuperFantasyKingdom.Spawner;
 using UnityEngine;
