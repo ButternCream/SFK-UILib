@@ -2,8 +2,8 @@
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using UnityEngine;
-using TMPro;
 using UnityEngine.SceneManagement;
+using HarmonyLib;
 
 namespace SFKMod.UILib
 {
@@ -25,6 +25,8 @@ namespace SFKMod.UILib
         private ConfigEntry<float> m_CfgWindowW;
         private ConfigEntry<float> m_CfgWindowH;
 
+        Harmony harmony = new Harmony(PLUGIN_GUID);
+
         void Awake()
         {
             // Plugin startup logic
@@ -44,17 +46,16 @@ namespace SFKMod.UILib
 
             SceneManager.sceneLoaded += OnSceneLoaded;
 
+            harmony.PatchAll();
+
             Logger.LogInfo($"Plugin {PLUGIN_GUID} is loaded!");
 
             DontDestroyOnLoad(this);
         }
 
-        void OnSceneLoaded(Scene scene, LoadSceneMode loadMoade)
+        void OnSceneLoaded(Scene scene, LoadSceneMode loadMode)
         {
-            if (scene.name == "TitleScene")
-            {
-                AssetManager.Instance.LoadAll(true);
-            }
+            Logger.LogInfo($"scene={scene.name} loadMode={loadMode}");
         }
 
         void Update()
@@ -72,6 +73,24 @@ namespace SFKMod.UILib
                 return;
             }
             m_WindowRect = GUILayout.Window(123456, m_WindowRect, DrawWindowContents, "Mod");
+        }
+
+        void SpawnAtScreenCenter()
+        {
+            // Convert screen center to world
+            var cam = Camera.main;
+            if (!cam)
+            {
+                Debug.LogWarning("No main camera found!");
+                return;
+            }
+
+            Vector3 screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f, cam.nearClipPlane + 5f);
+            Vector3 worldPos = cam.ScreenToWorldPoint(screenCenter);
+            worldPos.z = 0f;
+
+            // Spawn via your custom API
+            ShardAPI.SpawnFaith(worldPos, 1, "GUIButtonTestSpawn");
         }
 
         private void DrawWindowContents(int id)
@@ -109,6 +128,10 @@ namespace SFKMod.UILib
                     var btn = UIObject.TestCreateMenuButton($"test_{i}", $"button {i}", null, panel.transform);
                 }
             }
+            if (GUILayout.Button("Test Spawn"))
+            {
+                SpawnAtScreenCenter();
+            }
 
 
             GUILayout.Space(8);
@@ -127,11 +150,13 @@ namespace SFKMod.UILib
         private void OnApplicationQuit()
         {
             SaveWindowRectToConfig();
+            harmony.UnpatchSelf();
         }
 
         private void OnDestroy()
         {
             SaveWindowRectToConfig();
+            harmony.UnpatchSelf();
         }
 
         private void SaveWindowRectToConfig()

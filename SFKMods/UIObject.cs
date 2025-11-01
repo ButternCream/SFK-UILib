@@ -276,7 +276,6 @@ public class UIObject
         panelRect.anchorMax = new Vector2(0, 1); 
         panelRect.pivot = new Vector2(0, 1); 
 
-
         panelRect.anchoredPosition = location;
         panelRect.sizeDelta = size;
         

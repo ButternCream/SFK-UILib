@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net481</TargetFramework>
     <AssemblyName>SFKMod</AssemblyName>
-    <Product>UI Plugin Test</Product>
+    <Product>A Bunch of SFK modding tests</Product>
     <Version>1.0.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
